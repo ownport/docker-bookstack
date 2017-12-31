@@ -1,0 +1,47 @@
+---
+
+version: '3'
+
+services:
+
+  mysql-server:
+    image: mysql:8.0
+    environment:
+    - MYSQL_ROOT_PASSWORD=secret
+    - MYSQL_DATABASE=bookstack
+    - MYSQL_USER=bookstack
+    - MYSQL_PASSWORD=secret
+    volumes:
+    - mysql:/var/lib/mysql
+
+  bookstack-server:
+    image: ownport/bookstack:0.19.0
+    depends_on:
+    - mysql-server
+    environment:
+    - DB_HOST=mysql-server:3306
+    - DB_DATABASE=bookstack
+    - DB_USERNAME=bookstack
+    - DB_PASSWORD=secret
+    volumes:
+    - uploads:/var/www/public/uploads
+    - storage:/var/www/public/storage
+    ports:
+    - "8080:80"  
+
+volumes:
+
+  mysql:
+    # driver: host
+    # driver_opts:
+    #   source: data/mysql
+
+  uploads:
+    # driver: host
+    # driver_opts:
+    #   source: data/uploads
+
+  storage:
+    # driver: host
+    # driver_opts:
+    #   source: data/storage
